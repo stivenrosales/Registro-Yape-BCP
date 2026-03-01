@@ -1,0 +1,26 @@
+[project]
+name = "gastos-yape-interbank"
+version = "0.1.0"
+description = "Automatización de gastos BCP/Interbank desde Gmail hacia Google Sheets"
+requires-python = ">=3.11"
+dependencies = [
+    "google-api-python-client>=2.0",
+    "google-auth-oauthlib>=1.0",
+    "google-auth-httplib2>=0.2",
+    "beautifulsoup4>=4.12",
+    "openai>=1.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "python-dotenv>=1.0",
+    "schedule>=1.2",
+]
+
+[project.scripts]
+gastos = "src.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

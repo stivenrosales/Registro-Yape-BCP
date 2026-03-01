@@ -1,0 +1,19 @@
+services:
+  gastos:
+    build: .
+    env_file: .env
+    volumes:
+      - ./token.json:/app/token.json
+      - ./credentials.json:/app/credentials.json
+    # Ejecutar cada 15 minutos via entrypoint con schedule
+    command: >
+      python -c "
+      import schedule, time
+      from src.main import main
+      schedule.every(15).minutes.do(main)
+      main()  # Ejecutar inmediatamente al iniciar
+      while True:
+          schedule.run_pending()
+          time.sleep(60)
+      "
+    restart: unless-stopped
