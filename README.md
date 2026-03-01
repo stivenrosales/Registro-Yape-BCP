@@ -97,17 +97,43 @@ base64 -i credentials.json
 base64 -i token.json
 ```
 
-### Docker Compose
+### Opción 1: EasyPanel (si ya tienes un VPS con n8n u otros servicios)
 
-```bash
-docker compose up -d
-```
-
-### EasyPanel
+Si ya tienes un VPS con [EasyPanel](https://easypanel.io/) para correr n8n u otras apps, puedes agregar este servicio al mismo servidor:
 
 1. Crear servicio **App** desde GitHub → `stivenrosales/Registro-Yape-BCP`
 2. Agregar las variables de entorno en la configuración
 3. Deploy — no necesita puerto ni dominio, es un worker en background
+
+### Opción 2: Railway (gratis, sin VPS)
+
+Ideal si no tienes un VPS. [Railway](https://railway.com/) tiene plan free y soporta Docker:
+
+1. Fork este repositorio
+2. Conecta tu fork en [railway.com](https://railway.com/) → **New Project** → **Deploy from GitHub**
+3. Agrega las variables de entorno en **Settings → Variables**
+4. Deploy — Railway detecta el Dockerfile automáticamente
+
+### Opción 3: Render (gratis, sin VPS)
+
+Similar a Railway. [Render](https://render.com/) tiene plan free para background workers:
+
+1. Fork este repositorio
+2. En [render.com](https://render.com/) → **New** → **Background Worker** → conecta tu fork
+3. Agrega las variables de entorno
+4. Deploy
+
+### Opción 4: Docker Compose (VPS propio)
+
+Si tienes un VPS con Docker instalado:
+
+```bash
+git clone https://github.com/stivenrosales/Registro-Yape-BCP.git
+cd Registro-Yape-BCP
+cp .env.example .env
+# Editar .env con tus credenciales
+docker compose up -d
+```
 
 ## Stack
 
