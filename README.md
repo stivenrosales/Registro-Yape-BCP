@@ -9,10 +9,11 @@ Gmail (BCP/Yape) → BeautifulSoup → Gemini AI → Google Sheets
 ## Cómo funciona
 
 1. **Busca** correos no procesados de `notificaciones@notificacionesbcp.com.pe` y `notificaciones@yape.pe`
-2. **Limpia** el HTML del correo con BeautifulSoup para extraer el texto relevante
-3. **Extrae** los datos de la transacción con Gemini 2.5 Flash Lite via OpenRouter (concepto, monto, banco, fecha)
-4. **Registra** la transacción en Google Sheets (gastos en negativo, ingresos en positivo)
-5. **Etiqueta** el correo como `gastos-procesado` para no volver a procesarlo
+2. **Filtra** correos a partir de una fecha configurable y excluye operaciones de wardadito
+3. **Limpia** el HTML del correo con BeautifulSoup para extraer el texto relevante
+4. **Extrae** los datos de la transacción con Gemini 2.5 Flash Lite via OpenRouter (concepto, monto, banco, fecha)
+5. **Registra** la transacción en Google Sheets (gastos en negativo, ingresos en positivo)
+6. **Etiqueta** el correo como `gastos-procesado` para no volver a procesarlo
 
 ### Tipos de transacciones soportadas
 
@@ -26,6 +27,10 @@ Gmail (BCP/Yape) → BeautifulSoup → Gemini AI → Google Sheets
 | PLIN | PLIN-Luis Rosales | -200.00 |
 | Recarga celular | Recarga Yape Integratel | -5.00 |
 | Devolución | Devolución YAPE | +8.00 |
+
+### Correos excluidos
+
+- Operaciones de **wardadito** (cualquier correo que contenga "ward" en asunto o cuerpo)
 
 ## Requisitos previos
 
@@ -75,6 +80,16 @@ El Dockerfile incluye un scheduler que ejecuta el pipeline cada 15 minutos.
 | `GMAIL_CREDENTIALS_B64` | `credentials.json` codificado en base64 |
 | `GMAIL_TOKEN_B64` | `token.json` codificado en base64 |
 
+### Variables de entorno opcionales
+
+| Variable | Default | Descripción |
+|----------|---------|-------------|
+| `EMAIL_SENDERS` | `notificaciones@notificacionesbcp.com.pe,notificaciones@yape.pe` | Remitentes a monitorear (separados por coma) |
+| `EMAILS_AFTER_DATE` | `2026/03/01` | Solo procesar correos a partir de esta fecha |
+| `GEMINI_MODEL` | `google/gemini-2.5-flash-lite` | Modelo de IA en OpenRouter |
+| `MAX_EMAILS_PER_RUN` | `50` | Máximo de correos por ejecución |
+| `GMAIL_PROCESSED_LABEL` | `gastos-procesado` | Label de Gmail para correos procesados |
+
 Para generar los valores base64:
 
 ```bash
@@ -115,10 +130,20 @@ src/
 └── config.py         # Settings desde .env
 ```
 
-## Agregar más remitentes
+## Configuración
+
+### Agregar más remitentes
 
 Edita `EMAIL_SENDERS` en tu `.env` separando por comas:
 
 ```env
 EMAIL_SENDERS=notificaciones@notificacionesbcp.com.pe,notificaciones@yape.pe,otro@banco.com
+```
+
+### Cambiar fecha de inicio
+
+Para procesar correos desde otra fecha:
+
+```env
+EMAILS_AFTER_DATE=2026/01/01
 ```
