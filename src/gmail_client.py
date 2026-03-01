@@ -69,7 +69,7 @@ def get_or_create_label(service, label_name: str) -> str:
 def fetch_unprocessed_emails(service) -> list[dict]:
     """Busca correos de BCP/Yape/Interbank no procesados."""
     senders = " OR ".join(s.strip() for s in settings.email_senders.split(","))
-    query = f"from:({senders}) -label:{settings.gmail_processed_label} after:{settings.emails_after_date} -subject:ward"
+    query = f"from:({senders}) -label:{settings.gmail_processed_label} after:{settings.emails_after_date} -ward"
     logger.info(f"Buscando correos con query: {query}")
 
     messages = []
